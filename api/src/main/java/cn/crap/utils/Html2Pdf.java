@@ -35,7 +35,7 @@ public class Html2Pdf {
 			}
 
 			if(pdfText == null){
-				pdfText = HttpPostGet.getInputStream("http://api.crap.cn/result.do?result=" +
+			    pdfText = HttpPostGet.getInputStream(domain+"/result.do?result=" +
 						URLEncoder.encode("地址有误，生成pdf失败，请确认配置文件config.properties中的网站域名配置是否正确！"
                                 + "当前配置的域名为：" + domain,"utf-8"));
 			}

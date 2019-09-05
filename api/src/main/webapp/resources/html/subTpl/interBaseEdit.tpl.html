@@ -25,7 +25,7 @@
                 <div ng-class="{true: 'input-group w', false: 'w'}[model.moduleUrl!='']">
                     <div class="input-group-addon" ng-bind="model.moduleUrl" ng-if="model.moduleUrl"></div>
                     <input type="text" autocomplete="off" class="form-control" ng-model="model.url" required maxlength="200"
-                           placeholder="示例：http://api.crap.cn/CustomerOrder/{id}">
+                           placeholder="示例：{{settings.DOMAIN}}/CustomerOrder/{id}">
                 </div>
             </td>
         </tr>

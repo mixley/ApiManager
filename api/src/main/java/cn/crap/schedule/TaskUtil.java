@@ -9,9 +9,21 @@ import java.util.concurrent.TimeUnit;
  * @date 2018/10/5 15:42
  */
 public class TaskUtil {
-    private static ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 6, 5, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
-
+    private static ThreadPoolExecutor executor ;
+    private TaskUtil(){
+        init();
+    }
+    public static void init(){
+        if (null==executor){
+            executor = new ThreadPoolExecutor(3, 6, 5, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
+        }
+    }
     public static void execute(AbstractTask task){
+        init();
         executor.execute(task);
+    }
+    public static void shutdownNow(){
+        init();
+        executor.shutdownNow();
     }
 }

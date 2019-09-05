@@ -59,7 +59,7 @@ public class MainController extends BaseController {
     @RequestMapping("/admin/property.do")
     @AuthPassport(authority = C_AUTH_SETTING)
     @ResponseBody
-    public JsonResult property() throws Exception {
+    public JsonResult property(HttpServletRequest request) throws Exception {
         Map<String, Object> returnMap = new HashMap<>();
         Map<String, Object> properties = new HashMap<>();
         properties.put("domain", settingCache.getDomain());
@@ -78,8 +78,7 @@ public class MainController extends BaseController {
         returnMap.put("properties", properties);
         // 从crapApi获取版本信息
         try {
-            String crapApiInfo =
-                    HttpPostGet.get("http://api.crap.cn/mock/trueExam.do?id=c107b205-c365-4050-8fa9-dbb7a38b3d11&cache=true", null, null);
+            String crapApiInfo = HttpPostGet.get(settingCache.getDomain()+"/mock/trueExam.do?id=c107b205-c365-4050-8fa9-dbb7a38b3d11&cache=true", null, null);
             JSONObject json = JSONObject.fromObject(crapApiInfo);
             if (json.getInt("success") == 1) {
                 json = json.getJSONObject("data");

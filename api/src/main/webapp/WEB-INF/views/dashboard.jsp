@@ -192,7 +192,7 @@
             ©<a href="http://crap.cn" target="_blank">crap.cn</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;版本号 [V8.1.5-bate]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <ul class="dis-in-tab p0 m0">
                 <li class="dis-in-tab mr20">
-                    <a target="_blank" href="http://api.crap.cn/static/help/help-articleList--1.html">帮助文档</a>
+                    <a target="_blank" href="{{settings.DOMAIN}}/static/help/help-articleList--1.html">帮助文档</a>
                 </li>
                 <li class="dis-in-tab mr20">
                     <a target="_blank" href="https://github.com/EhsanTang/CrapApi">GitHub</a>

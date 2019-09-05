@@ -3,14 +3,7 @@ package cn.crap.framework;
 import cn.crap.utils.MyString;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +16,7 @@ public class ParamFilter extends OncePerRequestFilter {
 
     @Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
-    	    try {
+        try {
                 filterChain.doFilter(new HttpServletRequestWrapper(request) {
                     @Override
                     public String getParameter(String name) {

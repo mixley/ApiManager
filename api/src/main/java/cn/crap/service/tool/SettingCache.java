@@ -4,14 +4,18 @@ import cn.crap.adapter.SettingAdapter;
 import cn.crap.beans.Config;
 import cn.crap.dto.SettingDto;
 import cn.crap.enu.SettingEnum;
+import cn.crap.framework.ThreadContext;
 import cn.crap.model.Setting;
 import cn.crap.service.SettingService;
+import cn.crap.utils.BaseUrlUtil;
+import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +40,27 @@ public class SettingCache{
 	}
 
 	public String getDomain(){
-		return getStr(SettingEnum.DOMAIN);
+        String baseUrl = BaseUrlUtil.getBaseUrl();
+        if (Strings.isNullOrEmpty(baseUrl)){
+            HttpServletRequest request = ThreadContext.request();
+            if (null!=request){
+                baseUrl = BaseUrlUtil.getBaseUrl(request);
+            }
+        }
+        if (Strings.isNullOrEmpty(baseUrl)){
+            baseUrl = getStr(SettingEnum.DOMAIN);
+        }else if (!baseUrl.equals(SettingEnum.DOMAIN.getValue())){
+            SettingEnum.DOMAIN.setValue(baseUrl);
+            if (settingDtos!=null){
+                for (SettingDto dto : settingDtos) {
+                    if (dto.getKey().equals("DOMAIN")){
+                        dto.setValue(baseUrl);
+                        customSettingService.update(SettingAdapter.getModel(dto));
+                    }
+                }
+            }
+        }
+        return baseUrl;
 	}
 
 	public Integer getInt(SettingEnum settingEnum){
@@ -89,7 +113,6 @@ public class SettingCache{
         if (settingDtos != null){
             return settingDtos;
         }
-
         List<Setting> settings= customSettingService.getAll();
         settingDtos = SettingAdapter.getDto(settings);
         return settingDtos;
