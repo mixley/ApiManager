@@ -281,30 +281,30 @@ public abstract class BaseController implements IConst, ISetting {
      * @throws MyException
      */
     protected void checkFrontPermission(String inputPassword, String visitCode, Project project) throws MyException {
-        // 如果是私有项目，必须登录才能访问，公开项目需要查看是否需要密码
-        if (project.getType() == ProjectType.PRIVATE.getType()) {
+        // 如果是私有项目，必须登录才能访问，公开项目需要查看是否需要密码 或登录且有权限后可访问
+        try {
             LoginInfoDto user = LoginUserHelper.getUser(MyError.E000041);
-
             // 最高管理员修改项目
             if (user != null && ("," + user.getAuthStr()).indexOf("," + AdminPermissionEnum.SUPER.name() + ",") >= 0) {
                 return;
             }
-
             // 自己的项目
             if (user.getId().equals(project.getUserId())) {
                 return;
             }
-
             // 项目成员
             List<ProjectUserPO> projectUserPOList = ServiceFactory.getInstance().getProjectUserService().select(
                     new ProjectUserQuery().setProjectId(project.getId()).setUserId(user.getId()));
             if (CollectionUtils.isEmpty(projectUserPOList)) {
                 throw new MyException(MyError.E000042);
             }
-
-        } else {
-            String projectPassword = project.getPassword();
-            verifyPassword(project.getId(), projectPassword, inputPassword, visitCode);
+        }catch (MyException e){
+            if (project.getType() == ProjectType.PRIVATE.getType()) {
+                throw e;
+            } else {
+                String projectPassword = project.getPassword();
+                verifyPassword(project.getId(), projectPassword, inputPassword, visitCode);
+            }
         }
     }
 
