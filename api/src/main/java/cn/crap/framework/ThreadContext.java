@@ -44,8 +44,11 @@ public class ThreadContext implements Filter {
         }
 
         THREAD_OBJECT.set(new ThreadObject((HttpServletRequest) request, (HttpServletResponse) response));
-        chain.doFilter(request, response);
-        THREAD_OBJECT.set(null);
+        try {
+            chain.doFilter(request, response);
+        }finally {
+            THREAD_OBJECT.set(null);
+        }
         return;
 
     }

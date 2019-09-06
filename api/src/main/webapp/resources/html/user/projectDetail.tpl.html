@@ -81,8 +81,7 @@
 								</span>
 							</div>
 							<div class="col-xs-6 p0 maw400 mah400">
-								<img src="{{model.cover}}" class="main-bg" id="image"
-									ng-show="model.cover!=''">
+								<img ng-show="model.cover&&model.cover!=''" ng-src="{{model.cover}}" class="main-bg" id="image" >
 							</div>
 
 						</td>

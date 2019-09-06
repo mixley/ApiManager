@@ -26,7 +26,7 @@
             <div class="row p0 m0 pt30">
                 <div class="col-xs-3 col-md-3 h50 lh50 p0 m0">
                     <div class="p0 fl">
-                        <a href="/">
+                        <a href="{{settings.DOMAIN}}/">
                             <img class="h50" src="${logo}"/>
                         </a>
                     </div>

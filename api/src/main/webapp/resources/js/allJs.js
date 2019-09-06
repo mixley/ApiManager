@@ -4298,13 +4298,3 @@ function importJson(type) {
         var mydate = new Date();
         rowNum = mydate.getTime();
 }**/
-function getRoot() {
-    var hostname = location.hostname;
-    var pathname = location.pathname;
-    var contextPath = pathname.split("/")[1];
-    var port = location.port;
-    var protocol = location.protocol;
-    return protocol + "//" + hostname + ":" + port + "/" + contextPath;
-}
-window.BASE_URL = getRoot();
-// alert(BASE_URL);

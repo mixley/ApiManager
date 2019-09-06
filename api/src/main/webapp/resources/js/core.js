@@ -71,6 +71,14 @@ function getValue(params, key)
  * 
  * js中undefined,0,null,'',"",false均代表false
  */
+function getRoot() {
+    var hostname = location.hostname;
+    var pathname = location.pathname;
+    var contextPath = pathname.split("/")[1];
+    var port = location.port;
+    var protocol = location.protocol;
+    return protocol + "//" + hostname + ":" + port + "/" + contextPath+"/";
+}
 // ----------------------------------//
 function callAjax(iUrl, iFormId, iPost, isHowMethod, iLoading, iTarget,
 		iParams, iCallBack, iCallBackParam, iAsync, tipTime) {
@@ -89,6 +97,9 @@ function callAjax(iUrl, iFormId, iPost, isHowMethod, iLoading, iTarget,
 	// 显示提示语句，只有异步请求才显示提示框
 	if(aAsync) {
         showTip(iTarget, iLoading);
+    }
+	if (!iUrl.startWith("/")&&!iUrl.startWith("http://")){
+        iUrl = getRoot()+iUrl;
     }
 
 	xParams = xParams + '&CPTS=' + new Date().getTime();
