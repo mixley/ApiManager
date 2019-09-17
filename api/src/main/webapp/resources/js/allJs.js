@@ -3051,6 +3051,7 @@ function replaceAll(originalStr, oldStr, newStr) {
     if (!newStr) {
         newStr = '';
     }
+    oldStr = oldStr.replace(/array\[(.*)\]/,'array\\\[$1\\\]');
     var regExp = new RegExp(oldStr, "gm");
     return originalStr.replace(regExp, newStr)
 }

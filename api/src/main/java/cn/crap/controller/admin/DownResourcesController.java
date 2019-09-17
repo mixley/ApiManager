@@ -37,7 +37,7 @@ public class DownResourcesController extends BaseController {
 
     @RequestMapping("/{dir}/{date}/{resFilePath:.*}")
     @ResponseBody
-    public void downResources(HttpServletRequest request, HttpServletResponse response, @PathVariable String dir,@PathVariable String date, @PathVariable String resFilePath) throws Exception {
+    public void downResources(HttpServletRequest request, HttpServletResponse response, @PathVariable String dir, @PathVariable String date, @PathVariable String resFilePath) throws Exception {
         String destDir = Tools.getServicePath();
         String filePath = "resources/upload/" + dir + "/" + date + "/" + resFilePath;
         File file = new File(destDir + filePath);
@@ -48,26 +48,40 @@ public class DownResourcesController extends BaseController {
                 FileSaveCriteria fileSaveCriteria = new FileSaveCriteria();
                 fileSaveCriteria.createCriteria().andFilenameEqualTo(filePath);
                 List<FileSave> fileSaves = fileSaveService.selectByExampleWithBLOBs(fileSaveCriteria);
-                if (null!=fileSaves&&fileSaves.size()>0){
+                if (null != fileSaves && fileSaves.size() > 0) {
                     FileSave fileSave = fileSaves.get(0);
                     byte[] fileblob = fileSave.getFileblob();
                     File parentFile = file.getParentFile();
-                    if (!parentFile.exists()){
+                    if (!parentFile.exists()) {
                         parentFile.mkdirs();
                     }
-                    file.createNewFile();
-                    try (FileOutputStream fileOutputStream = new FileOutputStream(file)){
-                        fileOutputStream.write(fileblob);
+                    response.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+                    if (file.canWrite()) {
+                        file.createNewFile();
+                        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                            fileOutputStream.write(fileblob);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
+                    response.setContentLength(fileblob.length);
+                    try (OutputStream os = response.getOutputStream()) {
+                        os.write(fileblob);
+                    }
+                    return;
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else {
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            byte[] data = FileUtil.getFileBytes(file);
+            response.setContentLength(data.length);
+            try (OutputStream os = response.getOutputStream()){
+                os.write(data);
+            }
         }
-        response.sendRedirect(settingCache.getDomain()+"/"+filePath);
-//        byte[] data = FileUtil.getFileBytes(file);
-//        try (OutputStream os = response.getOutputStream()){
-//            os.write(data);
-//        }
+//        response.sendRedirect(settingCache.getDomain() + "/" + filePath);
+
     }
 }
