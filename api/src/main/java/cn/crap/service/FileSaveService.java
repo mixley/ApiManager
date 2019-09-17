@@ -29,6 +29,10 @@ public class FileSaveService {
         return fileSaveDao.selectByExample(example);
     }
 
+    public List<FileSave> selectByExampleWithBLOBs(FileSaveCriteria example) {
+        return fileSaveDao.selectByExampleWithBLOBs(example);
+    }
+
     public long countByExample(FileSaveCriteria example) {
         return fileSaveDao.countByExample(example);
     }

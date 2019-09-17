@@ -5,6 +5,7 @@ import cn.crap.model.FileSave;
 import cn.crap.model.FileSaveCriteria;
 import cn.crap.service.FileSaveService;
 import cn.crap.service.tool.SettingCache;
+import cn.crap.utils.FileUtil;
 import cn.crap.utils.Tools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,10 +47,14 @@ public class DownResourcesController extends BaseController {
             try {
                 FileSaveCriteria fileSaveCriteria = new FileSaveCriteria();
                 fileSaveCriteria.createCriteria().andFilenameEqualTo(filePath);
-                List<FileSave> fileSaves = fileSaveService.selectByExample(fileSaveCriteria);
+                List<FileSave> fileSaves = fileSaveService.selectByExampleWithBLOBs(fileSaveCriteria);
                 if (null!=fileSaves&&fileSaves.size()>0){
                     FileSave fileSave = fileSaves.get(0);
                     byte[] fileblob = fileSave.getFileblob();
+                    File parentFile = file.getParentFile();
+                    if (!parentFile.exists()){
+                        parentFile.mkdirs();
+                    }
                     file.createNewFile();
                     try (FileOutputStream fileOutputStream = new FileOutputStream(file)){
                         fileOutputStream.write(fileblob);
