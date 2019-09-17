@@ -7,9 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
         <!--
-        font-family: SimSun
-
-        ;
+        font-family: SimSun;
         -->
         body {
             font-family: "Lantinghei SC", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
@@ -146,7 +144,7 @@
             </tr>
             <c:forEach var="v" items="${f.responseParam}">
                 <tr>
-                    <td style="padding-left:${v.deep*15}px'" >
+                    <td style="padding-left:${v.deep*15}px'">
                         <div>${v.realName}</div>
                     </td>
                     <td>${v.type}</td>

@@ -26,7 +26,8 @@ public class MyException  extends Exception{
 		this.tip = tip;
 	}
 
-	public String getMessage(){
+	@Override
+    public String getMessage(){
         return myError == null ? "" : myError.getMessage();
     }
 

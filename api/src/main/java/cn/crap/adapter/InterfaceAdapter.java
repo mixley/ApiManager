@@ -10,6 +10,7 @@ import cn.crap.model.Module;
 import cn.crap.model.Project;
 import cn.crap.utils.*;
 import com.alibaba.fastjson.JSONArray;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -259,35 +260,46 @@ public class InterfaceAdapter {
             }
             String name = paramDto.getName().trim();
             paramDto.setName(name);
-            paramDto.setRealName(name);
-            if (paramDto.getName().split(PARAM_SEPARATOR).length == deep){
+            String[] params = paramDto.getName().split(PARAM_SEPARATOR);
+            if (params.length == deep){
                 // 一级参数没有父参数，直接放入finished
                 if (deep == 1){
+                    paramDto.setRealName(name);
                     paramDto.setDeep(deep);
                     finished.add(paramDto);
                     continue;
                 }
-                for (int i = 0; i < finished.size(); i++){
-                    String parentParam = finished.get(i).getName();
-                    if (parentParam.split(PARAM_SEPARATOR).length == deep - 1){
-                        String parentNodeName = parentParam + PARAM_SEPARATOR;
-                        if(name.startsWith(parentNodeName)){
-                            paramDto.setDeep(deep);
-                            String[] paramNames = name.split(PARAM_SEPARATOR);
-                            paramDto.setRealName(paramNames[paramNames.length-1]);
-                            finished.add(i + 1, paramDto);
+
+                String paramName = params[params.length - 1];
+                //查询父节点
+                int i = 0;
+                for (; i < finished.size(); i++){
+                    String finishedKey = finished.get(i).getName();
+                    if(name.startsWith(finishedKey)){
+                        String realName = name.substring((finishedKey+PARAM_SEPARATOR).length());
+                        if (realName.equals(paramName)){
                             break;
                         }
                     }
-
-                    // 没有找到父节点，追加到最后
-                    if (i == finished.size() - 1){
-                        paramDto.setDeep(1);
-                        finished.add(paramDto);
-                        break;
-                    }
                 }
-            } else if(paramDto.getName().split(PARAM_SEPARATOR).length > deep){
+                if (i == finished.size()){
+                    String[] tempNames = new String[params.length-1];
+                    System.arraycopy(params,0,tempNames,0,tempNames.length);
+                    String tempName = org.apache.commons.lang.StringUtils.join(tempNames, PARAM_SEPARATOR);
+                    ParamDto faParamDto = new ParamDto();
+                    faParamDto.setDeep(deep-1);
+                    faParamDto.setName(tempName);
+                    faParamDto.setRealName(tempNames[tempNames.length-1]);
+                    faParamDto.setType("object");
+                    faParamDto.setNecessary("false");
+                    faParamDto.setRemark("默认生成 默认object");
+                    finished.add(faParamDto);
+                }
+                paramDto.setDeep(deep);
+                paramDto.setRealName(paramName);
+                finished.add(paramDto);
+
+            } else if(params.length > deep){
                 newUnfinished.add(paramDto);
             }
         }

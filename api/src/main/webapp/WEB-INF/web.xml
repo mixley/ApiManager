@@ -68,10 +68,12 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:springMVC.xml</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>10</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
+        <url-pattern>/</url-pattern>
+        <url-pattern>/downResources/**</url-pattern>
         <url-pattern>*.do</url-pattern>
         <url-pattern>*.json</url-pattern>
 		<url-pattern>*.htm</url-pattern>

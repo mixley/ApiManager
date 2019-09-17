@@ -12,9 +12,7 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
-
-
-        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	<!--注解扫描范围 -->
 	<context:annotation-config />
@@ -28,7 +26,8 @@
 	<import resource="monitor.xml" /> -->
 	<!-- <import resource="mongo.xml" /> -->
 	<import resource="mybatis-dao.xml" />
-	
+    <mvc:resources location="/resources/" mapping="/resources/**"/>
+
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<value>classpath:config.properties</value>

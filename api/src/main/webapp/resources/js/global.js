@@ -156,6 +156,7 @@ function uploadImage(id,size,form){
 	showMessage('lookUp', 'false', false, -1);
 	form.submit();
 }
+
 //上传图片非编辑器默认回调方法
 function uploadImgCallBack(msg, url, property) {
 	if (msg.indexOf("[OK]") >= 0) {

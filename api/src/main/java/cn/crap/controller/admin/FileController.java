@@ -4,11 +4,16 @@ import cn.crap.beans.Config;
 import cn.crap.enu.SettingEnum;
 import cn.crap.framework.base.BaseController;
 import cn.crap.framework.interceptor.AuthPassport;
+import cn.crap.model.FileSave;
+import cn.crap.service.FileSaveService;
 import cn.crap.utils.DateFormartUtil;
+import cn.crap.utils.FileUtil;
 import cn.crap.utils.Tools;
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
+import com.google.common.base.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 
 @Controller
 public class FileController extends BaseController{
 
+    @Autowired
+    FileSaveService fileSaveService;
     @RequestMapping(value="/user/file/upload.do")
     @ResponseBody
     @AuthPassport
@@ -45,6 +53,7 @@ public class FileController extends BaseController{
         }
     }
 
+
     @RequestMapping(value="/user/markdown/upload.do")
     @ResponseBody
     @AuthPassport
@@ -56,7 +65,6 @@ public class FileController extends BaseController{
             printMsg("{\"success\": 0,\"message\": \"" + result + "\"}");
         }
     }
-
 
     private String upload(MultipartFile file) {
         String result = "";
@@ -97,22 +105,37 @@ public class FileController extends BaseController{
                     new File(destDir+saveUrl).mkdirs();
                 }
 
-                if (settingCache.equalse(SettingEnum.OPEN_ALIYUN, "true")){
-                    if(result.indexOf("[ERROR]")<0){
-                        updateFileToAliyun(file, saveUrl+realFileName);
+                try {
+                    if (settingCache.equalse(SettingEnum.OPEN_ALIYUN, "true")){
+                        if(result.indexOf("[ERROR]")<0){
+                            if (!Strings.isNullOrEmpty(Config.accessKeyId)&&!Strings.isNullOrEmpty(Config.accessKeySecret)){
+                                updateFileToAliyun(file, saveUrl+realFileName);
+                            }
+                        }
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
                 File targetFile = new File(destDir+saveUrl,realFileName);
                 file.transferTo(targetFile);
                 result = saveUrl+realFileName;
+                try {
+                    FileSave fileSave = new FileSave();
+                    fileSave.setFilename(result);
+                    fileSave.setFileblob(FileUtil.getFileBytes(targetFile));
+                    fileSave.setCreatdate(new Date());
+                    fileSaveService.insert(fileSave);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 result = "[ERROR]上传失败";
             }
         }
 
-        return result;
+        return result.replaceAll("resources/upload","downResources");
     }
 
     @RequestMapping(value="/user/file/uploadAllToAliyun.do")
@@ -125,8 +148,10 @@ public class FileController extends BaseController{
             ClientConfiguration conf = new ClientConfiguration();
             conf.setConnectionTimeout(1000);
             conf.setSocketTimeout(1000);
-            client = new OSSClient(Config.endPoint, Config.accessKeyId, Config.accessKeySecret, conf);
-            updateFileToAliyun(new File(basePath), client);
+            if (!Strings.isNullOrEmpty(Config.accessKeyId)&&!Strings.isNullOrEmpty(Config.accessKeySecret)){
+                client = new OSSClient(Config.endPoint, Config.accessKeyId, Config.accessKeySecret, conf);
+                updateFileToAliyun(new File(basePath), client);
+            }
         }catch (Exception e){
             throw e;
         }finally {
@@ -143,8 +168,10 @@ public class FileController extends BaseController{
                 ClientConfiguration conf = new ClientConfiguration();
                 conf.setConnectionTimeout(1000);
                 conf.setSocketTimeout(1000);
-                client = new OSSClient(Config.endPoint, Config.accessKeyId, Config.accessKeySecret, conf);
-                client.putObject(Config.bucketName, dir, file.getInputStream());
+                if (!Strings.isNullOrEmpty(Config.accessKeyId)&&!Strings.isNullOrEmpty(Config.accessKeySecret)){
+                    client = new OSSClient(Config.endPoint, Config.accessKeyId, Config.accessKeySecret, conf);
+                    client.putObject(Config.bucketName, dir, file.getInputStream());
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }finally {
@@ -160,11 +187,13 @@ public class FileController extends BaseController{
             if(file.isDirectory()){
                 File[] fileArray=file.listFiles();
                 if(fileArray!=null){
-
-                    for (int i = 0; i < fileArray.length; i++) {
-                        //递归调用
-                        updateFileToAliyun(fileArray[i], client);
+                    if (!Strings.isNullOrEmpty(Config.accessKeyId)&&!Strings.isNullOrEmpty(Config.accessKeySecret)){
+                        for (int i = 0; i < fileArray.length; i++) {
+                            //递归调用
+                            updateFileToAliyun(fileArray[i], client);
+                        }
                     }
+
                 }
             }
             else{

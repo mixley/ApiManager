@@ -252,6 +252,7 @@ visitorModule.controller('fontInit', function($rootScope,$scope, $http, $state, 
 				alert("系统初始化异常："+isSuccess.replace('[ERROR]', ''));
 			 }
 			$rootScope.settings = result.data.settingMap;
+            $rootScope.settings.DOMAIN = getRoot();
 			$rootScope.sessionAdminName = result.data.sessionAdminName;
 			$rootScope.fontMenus = result.data.menuList;
 		});
@@ -260,6 +261,14 @@ visitorModule.controller('fontInit', function($rootScope,$scope, $http, $state, 
 });
 
 
+function getRoot() {
+    var hostname = location.hostname;
+    var pathname = location.pathname;
+    var contextPath = pathname.split("/")[1];
+    var port = location.port;
+    var protocol = location.protocol;
+    return protocol + "//" + hostname + ":" + port + "/" + contextPath;
+}
 
 
 

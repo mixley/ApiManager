@@ -6,6 +6,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -16,15 +17,17 @@ public class Html2Pdf {
 	 * 如果interFaceId不为空则单个下载，否则按模块下载
 	 * @throws Exception
 	 */
-	public static String createPdf(HttpServletRequest request, String domain, String interFaceId , String moduleId, String secretKey) throws Exception {
+	public static File createPdf(HttpServletRequest request, String domain, String interFaceId , String moduleId, String secretKey) throws Exception {
 		Document document = null;
 		PdfWriter writer = null;
+        File file = null;
 		try {
 			String destDir = Tools.getServicePath() + "resources/download";
 			destDir += "/pdf_" + System.currentTimeMillis() + Tools.getChar(20) + ".pdf";
 
             document = new Document();
-			writer = PdfWriter.getInstance(document, new FileOutputStream(destDir));
+            file = new File(destDir);
+            writer = PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 			
 			InputStream pdfText = null;
@@ -43,7 +46,7 @@ public class Html2Pdf {
 			XMLWorkerHelper.getInstance().parseXHtml(writer, document, pdfText,
 					Charset.forName("UTF-8"), new ChinaFont());
 
-			return destDir;
+//			return destDir;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -57,6 +60,7 @@ public class Html2Pdf {
 				writer.close();
 			}
 		}
+		return file;
 	}
 
 }

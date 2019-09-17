@@ -133,6 +133,8 @@ public class MainController extends BaseController {
                 settingMap.put(setting.getKey(), setting.getValue());
             }
         }
+        settingMap.put("FILETYPE",Config.fileType);
+        settingMap.put("IMAGETYPE",Config.imageType);
 
         Map<String, Object> returnMap = new HashMap<String, Object>();
         returnMap.put("settingMap", settingMap);
@@ -141,7 +143,6 @@ public class MainController extends BaseController {
         returnMap.put("adminPermission", user.getAuthStr());
         returnMap.put("sessionAdminId", user.getId());
         returnMap.put("errorTips", stringCache.get(C_CACHE_ERROR_TIP));
-
         return new JsonResult(1, returnMap);
     }
 

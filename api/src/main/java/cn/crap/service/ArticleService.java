@@ -51,6 +51,7 @@ public class ArticleService extends BaseService<ArticleWithBLOBs, ArticleDao> im
      * @param model
      * @return
      */
+    @Override
     public boolean insert(ArticleWithBLOBs model) throws MyException{
         if (model == null) {
             return false;

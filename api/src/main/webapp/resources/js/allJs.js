@@ -1583,6 +1583,7 @@ userModule.controller('userCtrl', function ($rootScope, $scope, $http, $state, $
                 alert("系统初始化异常：" + isSuccess.replace('[ERROR]', ''));
             } else {
                 $rootScope.settings = result.data.settingMap;
+                $rootScope.settings.DOMAIN = getRoot();
                 $rootScope.sessionAdminName = result.data.sessionAdminName;
                 $rootScope.adminPermission = result.data.adminPermission;
                 $rootScope.sessionAdminName = result.data.sessionAdminName;
@@ -2303,6 +2304,7 @@ visitorModule.controller('fontInit', function ($rootScope, $scope, $http, $state
                 alert("系统初始化异常：" + isSuccess.replace('[ERROR]', ''));
             }
             $rootScope.settings = result.data.settingMap;
+            $rootScope.settings.DOMAIN = getRoot();
             $rootScope.sessionAdminName = result.data.sessionAdminName;
             $rootScope.fontMenus = result.data.menuList;
         });
@@ -2505,7 +2507,9 @@ function callAjax(iUrl, iFormId, iPost, isHowMethod, iLoading, iTarget,
     if (aAsync) {
         showTip(iTarget, iLoading);
     }
-
+    if (iUrl&&!iUrl.startsWith("/")&&!iUrl.startsWith("http://")){
+        iUrl = getRoot()+"/"+iUrl;
+    }
     xParams = xParams + '&CPTS=' + new Date().getTime();
     $.ajax({
         type: aPost,
@@ -4298,3 +4302,25 @@ function importJson(type) {
         var mydate = new Date();
         rowNum = mydate.getTime();
 }**/
+
+function getRoot() {
+    var hostname = location.hostname;
+    var pathname = location.pathname;
+    var contextPath = pathname.split("/")[1];
+    var port = location.port;
+    var protocol = location.protocol;
+    return protocol + "//" + hostname + ":" + port + "/" + contextPath;
+}
+window.BASEURL = getRoot();
+
+function addDynamicJS(src, callback) {
+    var script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.src = src;
+    document.body.appendChild(script);
+    if (callback != undefined) {
+        script.onload = function () {
+            callback();
+        }
+    }
+}

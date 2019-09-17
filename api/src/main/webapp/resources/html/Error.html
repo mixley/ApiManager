@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CrapApi-Error</title>
+    <meta name="keywords" content="CrapApi,api,crap,接口管理,应用接口管理,开源接口管理,开源api接口管理"/>
+    <meta name="description" content="CrapApi|一个由anjularjs+bootstrap+springMVC搭建的免费开源的API接口管理系统（应用接口管理系统），api.crap.cn"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="resources/css/allCss.css?v=V8.2.0_0630" rel="stylesheet" type="text/css"/>
+    <script>
+        function getRoot() {
+            var hostname = location.hostname;
+            var pathname = location.pathname;
+            var contextPath = pathname.split("/")[1];
+            var port = location.port;
+            var protocol = location.protocol;
+            return protocol + "//" + hostname + ":" + port + "/" + contextPath ;
+        }
+    </script>
+</head>
+<body>
+<div style="position:relative;width:400px;margin:0 auto; background:#f7f7f7;color:#999999; font-size:14px;line-height:36px;">
+    <div style="margin-top:100px;height:60px; border-bottom:2px solid #6f5499;padding:10px;">
+        <div style="float:left;margin-left:10px; line-height:60px;font-size:18px;font-weight:bold;color:#555;width:360px;height:60px;overflow:hidden;text-align:left;">
+            <span id="code">500</span>
+        </div>
+    </div>
+    <div style="padding:20px;min-height:100px;white-space: pre-wrap;word-wrap: break-word;">
+        <span id="message">500抱歉,未知异常...</span>
+    </div>
+    <div style="padding:20px;text-align:right;margin-top:30px;">
+        <a style="color:#6f5499;" href="#" onclick="window.location.href=getRoot()+'/';">返回首页</a>
+        <br></div>
+</div>
+
+</body>
+</html>

@@ -77,7 +77,7 @@ function getRoot() {
     var contextPath = pathname.split("/")[1];
     var port = location.port;
     var protocol = location.protocol;
-    return protocol + "//" + hostname + ":" + port + "/" + contextPath+"/";
+    return protocol + "//" + hostname + ":" + port + "/" + contextPath;
 }
 // ----------------------------------//
 function callAjax(iUrl, iFormId, iPost, isHowMethod, iLoading, iTarget,
@@ -98,8 +98,8 @@ function callAjax(iUrl, iFormId, iPost, isHowMethod, iLoading, iTarget,
 	if(aAsync) {
         showTip(iTarget, iLoading);
     }
-	if (!iUrl.startWith("/")&&!iUrl.startWith("http://")){
-        iUrl = getRoot()+iUrl;
+	if (iUrl&&!iUrl.startsWith("/")&&!iUrl.startsWith("http://")){
+        iUrl = getRoot()+"/"+iUrl;
     }
 
 	xParams = xParams + '&CPTS=' + new Date().getTime();

@@ -1,6 +1,7 @@
 package cn.crap.framework;
 
 import cn.crap.schedule.TaskUtil;
+import cn.crap.utils.BaseUrlUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.CollectionUtils;
@@ -30,7 +31,6 @@ public class ThreadContext implements Filter {
     final public void init(FilterConfig filterConfig) throws ServletException {
         IGNORE_SUFFIXES = initIgnoreSuffix(filterConfig);
         log.info("ThreadContext:初始化..........");
-
     }
 
     @Override

@@ -41,26 +41,26 @@ public class SettingCache{
 
 	public String getDomain(){
         String baseUrl = BaseUrlUtil.getBaseUrl();
-        if (Strings.isNullOrEmpty(baseUrl)){
-            HttpServletRequest request = ThreadContext.request();
-            if (null!=request){
-                baseUrl = BaseUrlUtil.getBaseUrl(request);
-            }
+        HttpServletRequest request = ThreadContext.request();
+        if (null!=request){
+            baseUrl = BaseUrlUtil.getBaseUrl(request);
         }
         if (Strings.isNullOrEmpty(baseUrl)){
             baseUrl = getStr(SettingEnum.DOMAIN);
-        }else if (!baseUrl.equals(SettingEnum.DOMAIN.getValue())){
-            SettingEnum.DOMAIN.setValue(baseUrl);
-            if (settingDtos!=null){
-                for (SettingDto dto : settingDtos) {
-                    if (dto.getKey().equals("DOMAIN")){
-                        dto.setValue(baseUrl);
-                        customSettingService.update(SettingAdapter.getModel(dto));
-                    }
-                }
-            }
         }
         return baseUrl;
+//        if (!baseUrl.equals(SettingEnum.DOMAIN.getValue())){
+//            SettingEnum.DOMAIN.setValue(baseUrl);
+//            if (settingDtos!=null){
+//                for (SettingDto dto : settingDtos) {
+//                    if (dto.getKey().equals("DOMAIN")){
+//                        dto.setValue(baseUrl);
+//                        customSettingService.update(SettingAdapter.getModel(dto));
+//                    }
+//                }
+//            }
+//        }
+//        return baseUrl;
 	}
 
 	public Integer getInt(SettingEnum settingEnum){

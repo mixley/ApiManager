@@ -34,6 +34,7 @@ public class UserService extends BaseService<User, UserDao> {
         super.setBaseDao(userDao, TableId.USER);
     }
 
+    @Override
     public boolean insert(User user) throws MyException{
         if (user == null) {
             return false;

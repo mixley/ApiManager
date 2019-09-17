@@ -26,14 +26,14 @@
             <div class="row p0 m0 pt30">
                 <div class="col-xs-3 col-md-3 h50 lh50 p0 m0">
                     <div class="p0 fl">
-                        <a href="{{settings.DOMAIN}}/">
+                        <a href="<%=request.getContextPath()%>/">
                             <img class="h50" src="${logo}"/>
                         </a>
                     </div>
                     <div class="CFFF f20 pl5 dis-in-tab fl">CRAP-Api</div>
                 </div>
                 <div class="col-xs-9 col-md-9 tr f14 h50 lh50">
-                    <a href='{{settings.DOMAIN}}/static/help/help-articleList--1.html' target="_blank" class="dis-in-tab ml30 a-adorn">帮助文档</a>
+                    <a href='<%=request.getContextPath()%>/static/help/help-articleList--1.html' target="_blank" class="dis-in-tab ml30 a-adorn">帮助文档</a>
                     <a href='https://gitee.com/CrapApi/ApiDebug' target="_blank" class="dis-in-tab ml30 a-adorn">插件下载</a>
 
                     <c:if test="${login == false}">
@@ -178,7 +178,7 @@
                 ©crap.cn&nbsp;版本号 [V8.0.0]
                 <ul class="dis-in-tab">
                     <li class="dis-in-tab mr20">
-                        <a target="_blank" href="{{settings.DOMAIN}}/static/help/help-articleList--1.html">帮助文档</a>
+                        <a target="_blank" href="<%=request.getContextPath()%>/static/help/help-articleList--1.html">帮助文档</a>
                     </li>
                     <li class="dis-in-tab mr20">
                         <a target="_blank" href="https://github.com/EhsanTang/CrapApi">源码:GitHub</a>

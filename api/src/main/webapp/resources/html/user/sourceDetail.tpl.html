@@ -1,4 +1,4 @@
-<div class="r0 p10 pt0 col-xs-12" ng-controller="detailCtrl">
+<div class="r0 p10 pt0 col-xs-12" ng-controller="detailCtrl" >
 		<form ng-submit="submitForm('user/source/addOrUpdate.do')">
 			<table class="table table-bordered">
 				<tr>
@@ -41,11 +41,12 @@
 								</div>
 					    </div>
 						<span class="ndis"> 
-								<input type="file" name="img" onchange="uploadImage('filePath',-1,fileForm)" id="filePath" />
+								<input type="file" name="img" onchange="uploadImage('filePath',-1,fileForm)" id="filePath"/>
 						</span>
 					</td>
 				</tr>
 			</table>
+            <div style="color:#8c8c8c">目前支持格式为 文件：{{settings.FILETYPE}} 图片：{{settings.IMAGETYPE}}</div>
 		</form>
 	</div>
 <button class="btn btn-success fr" onclick="$('#sourceForm').click();">提交</button>

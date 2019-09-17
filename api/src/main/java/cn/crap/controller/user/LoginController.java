@@ -61,6 +61,17 @@ public class LoginController extends BaseController{
 		MyCookie.deleteCookie(IConst.COOKIE_TOKEN);
         return new JsonResult().success();
 	}
+	/**
+	 * 退出登录
+	 */
+	@RequestMapping("/loginOutToHome.do")
+	@ResponseBody
+	public void loginOutToHome( HttpServletResponse response) throws IOException {
+		String uid = MyCookie.getCookie(IConst.C_COOKIE_USERID);
+		userCache.del(uid);
+		MyCookie.deleteCookie(IConst.COOKIE_TOKEN);
+        response.sendRedirect(settingCache.getDomain()+"/home.do");
+	}
 	
 	
 	/**

@@ -1,13 +1,12 @@
 package cn.crap.utils;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Map;
 
 public class DownloadUtils {
     public static void downloadWord(HttpServletResponse response, File file, String name, boolean isPdf) throws Exception {

@@ -11,6 +11,7 @@ public interface ErrorDao extends BaseDao<Error>{
 
     int deleteByExample(ErrorCriteria example);
 
+    @Override
     int deleteByPrimaryKey(String id);
 
     int insert(Error record);

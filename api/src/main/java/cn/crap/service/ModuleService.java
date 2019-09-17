@@ -53,6 +53,7 @@ public class ModuleService extends BaseService<Module, ModuleDao>  implements IL
         return super.update(model);
     }
 
+    @Override
     public boolean delete(String id) throws MyException{
         Assert.notNull(id, "id can't be null");
 

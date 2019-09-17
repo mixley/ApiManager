@@ -12,6 +12,7 @@ import cn.crap.query.BaseQuery;
 import cn.crap.query.ProjectUserQuery;
 import cn.crap.service.tool.*;
 import cn.crap.utils.*;
+import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.Assert;
@@ -20,11 +21,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -116,9 +116,58 @@ public abstract class BaseController implements IConst, ISetting {
         throwExceptionWhenIsNull(param, tip, null);
     }
 
+    /**
+     * 是否是Ajax异步请求
+     */
+    public static boolean isAjaxRequest(HttpServletRequest request)
+    {
+        String accept = request.getHeader("accept");
+        if (accept != null && accept.indexOf("application/json") != -1)
+        {
+            return true;
+        }
+        String xRequestedWith = request.getHeader("X-Requested-With");
+        if (xRequestedWith != null && xRequestedWith.indexOf("XMLHttpRequest") != -1)
+        {
+            return true;
+        }
+        return false;
+    }
 
     @ExceptionHandler({Exception.class})
-    @ResponseBody
+    public void exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        try {
+            if (isAjaxRequest(request)){
+                JsonResult jsonResult = expHandler(request, ex);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getOutputStream().write(JSON.toJSONString(jsonResult).getBytes("UTF-8"));
+            }else{
+                String destDir = Tools.getServicePath();
+                String filePath = "/resources/html/Error.html";
+                File file = new File(destDir + filePath);
+                try {
+                    response.setContentType("text/html;charset=UTF-8");
+                    String html = new String(FileUtil.getFileBytes(file), "UTF-8");
+                    MyException myEx=null;
+                    if (ex instanceof MyException) {
+                        myEx = (MyException) ex;
+                    }else if (ex instanceof NullPointerException){
+                        myEx = new MyException(MyError.E000051);
+                    }else {
+                        myEx = new MyException(MyError.E000001);
+                    }
+                    html = html.replace("<span id=\"code\">500</span>",myEx.getErrorCode());
+                    html = html.replace("<span id=\"message\">500抱歉,未知异常...</span>",myEx.getErrorCode()+"抱歉,"+myEx.getMessage());
+                    response.getOutputStream().write(html.getBytes("UTF-8"));
+                }catch (Exception e){
+                    response.sendRedirect(BaseUrlUtil.getBaseUrl(request)+"/resources/html/Error.html");
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+//    @ResponseBody
     public JsonResult expHandler(HttpServletRequest request, Exception ex) {
         if (ex instanceof MyException) {
             return new JsonResult((MyException) ex);
