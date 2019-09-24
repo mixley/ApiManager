@@ -332,9 +332,9 @@ public class StaticizeController extends BaseController{
         		}
         		// 创建文件目录
         		String sourcePathFile = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
-        		Tools.createFile(path + "/downLoad/"+ sourcePathFile.replace(Tools.getServicePath(), ""));
+        		Tools.createFile(path + "/downLoad/"+ sourcePathFile.replace(Tools.getCanWriteDestDir(), ""));
         		
-        		Tools.copyFile(Tools.getServicePath() + sourcePath , path + "/downLoad/"+ sourcePath );
+        		Tools.copyFile(Tools.getCanWriteDestDir() + sourcePath , path + "/downLoad/"+ sourcePath );
         	}
         }
     	

@@ -7,6 +7,7 @@ import cn.crap.framework.MyException;
 import cn.crap.framework.SpringContextHolder;
 import cn.crap.model.Project;
 import cn.crap.service.tool.StringCache;
+import com.google.common.base.Strings;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ContextLoader;
@@ -350,12 +351,36 @@ public class Tools {
         if (project == null){
             return null;
         }
-        return Tools.getServicePath() + "static/"+project.getId();
+        return Tools.getCanWriteDestDir() + "static/"+project.getId();
     }
 
     public static String getServicePath() {
         String path = Tools.class.getClassLoader().getResource("").getPath().replace("WEB-INF/classes/", "");;
         return path.endsWith("/") ? path : path + "/";
+    }
+    public static String destDir=null;
+    public static String getCanWriteDestDir() {
+        if (Strings.isNullOrEmpty(destDir)){
+            destDir = Tools.getServicePath();
+            try {
+                File dest = new File(destDir);
+                if (!dest.exists()){
+                    dest.mkdirs();
+                }
+                File file1 = new File(dest, "test.temp");
+                if (!file1.createNewFile()){
+                    throw new Exception("can't");
+                }
+                file1.deleteOnExit();
+            }catch (Exception e){
+                destDir = System.getProperty("java.io.tmpdir") + "/apiFileTemp/";
+                File tempDir = new File(destDir);
+                if (!tempDir.exists()){
+                    tempDir.mkdirs();
+                }
+            }
+        }
+        return destDir;
     }
 
     public static String getChar(int num) {

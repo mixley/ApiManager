@@ -22,7 +22,7 @@ public class Html2Pdf {
 		PdfWriter writer = null;
         File file = null;
 		try {
-			String destDir = Tools.getServicePath() + "resources/download";
+			String destDir = Tools.getCanWriteDestDir() + "resources/download";
 			destDir += "/pdf_" + System.currentTimeMillis() + Tools.getChar(20) + ".pdf";
 
             document = new Document();

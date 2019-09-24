@@ -38,7 +38,7 @@ public class DownResourcesController extends BaseController {
     @RequestMapping("/{dir}/{date}/{resFilePath:.*}")
     @ResponseBody
     public void downResources(HttpServletRequest request, HttpServletResponse response, @PathVariable String dir, @PathVariable String date, @PathVariable String resFilePath) throws Exception {
-        String destDir = Tools.getServicePath();
+        String destDir = Tools.getCanWriteDestDir();
         String filePath = "resources/upload/" + dir + "/" + date + "/" + resFilePath;
         File file = new File(destDir + filePath);
         if (file == null || !file.exists()) {
