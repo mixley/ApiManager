@@ -3,10 +3,14 @@ package cn.crap.controller.admin;
 import cn.crap.framework.base.BaseController;
 import cn.crap.model.FileSave;
 import cn.crap.model.FileSaveCriteria;
+import cn.crap.model.Source;
+import cn.crap.query.SourceQuery;
 import cn.crap.service.FileSaveService;
+import cn.crap.service.SourceService;
 import cn.crap.service.tool.SettingCache;
 import cn.crap.utils.FileUtil;
 import cn.crap.utils.Tools;
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +38,8 @@ public class DownResourcesController extends BaseController {
     private SettingCache settingCache;
     @Autowired
     private FileSaveService fileSaveService;
+    @Autowired
+    private SourceService sourceService;
 
     @RequestMapping("/{dir}/{date}/{resFilePath:.*}")
     @ResponseBody
@@ -41,6 +47,19 @@ public class DownResourcesController extends BaseController {
         String destDir = Tools.getCanWriteDestDir();
         String filePath = "resources/upload/" + dir + "/" + date + "/" + resFilePath;
         File file = new File(destDir + filePath);
+        String realName=file.getName();
+//        if (dir.equals("otherFiles")){
+//            String suffix = resFilePath.substring(resFilePath.lastIndexOf("."));
+//            if (Strings.isNullOrEmpty(suffix)){
+//                suffix="";
+//            }else {
+//                suffix=suffix.startsWith(".")?suffix:"."+suffix;
+//            }
+//            realName = sourceService.querySourceNameByPath("downResources/" + dir + "/" + date + "/" + resFilePath)+suffix;
+//        }
+//        if (Strings.isNullOrEmpty(realName)){
+//            realName=file.getName();
+//        }
         if (file == null || !file.exists()) {
 //            continue;
             //从数据库读取
@@ -55,7 +74,7 @@ public class DownResourcesController extends BaseController {
                     if (!parentFile.exists()) {
                         parentFile.mkdirs();
                     }
-                    response.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+                    response.addHeader("Content-Disposition", "attachment; filename=\"" + realName + "\"");
                     if (file.canWrite()) {
                         file.createNewFile();
                         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {

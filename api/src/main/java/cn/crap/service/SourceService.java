@@ -32,6 +32,16 @@ public class SourceService extends BaseService<Source, SourceDao> implements ILo
         this.sourceDao = sourceDao;
         super.setBaseDao(sourceDao, TableId.SOURCE);
     }
+    public String querySourceNameByPath(String path) {
+        SourceCriteria example = new SourceCriteria();
+        example.createCriteria().andFilePathEqualTo(path);
+        List<Source> sources = sourceDao.selectByExample(example);
+        String sourceName = null;
+        if (sources!=null&&sources.size()>0){
+            sourceName = sources.get(0).getName();
+        }
+        return sourceName;
+    }
 
     public void update(Source model, boolean needAddLog) throws MyException{
         if (needAddLog) {
