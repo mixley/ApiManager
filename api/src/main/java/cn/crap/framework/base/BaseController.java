@@ -161,10 +161,12 @@ public abstract class BaseController implements IConst, ISetting {
                     response.getOutputStream().write(html.getBytes("UTF-8"));
                 }catch (Exception e){
                     response.sendRedirect(BaseUrlUtil.getBaseUrl(request)+"/resources/html/Error.html");
+                    log.error("错误", e);
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
+            log.error("错误", e);
         }
     }
 //    @ResponseBody

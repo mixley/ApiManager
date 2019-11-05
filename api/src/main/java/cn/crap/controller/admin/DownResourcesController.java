@@ -91,6 +91,7 @@ public class DownResourcesController extends BaseController {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                log.error("错误", e);
             }
         }else {
             response.addHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");

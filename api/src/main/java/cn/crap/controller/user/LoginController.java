@@ -148,7 +148,7 @@ public class LoginController extends BaseController{
 	@AuthPassport
 	public JsonResult sendValidateEmail() throws Exception {
 		LoginInfoDto user = LoginUserHelper.getUser();
-		emailService.sendRegisterEmail(user.getEmail(), user.getId());
+//		emailService.sendRegisterEmail(user.getEmail(), user.getId());
 		return new JsonResult(1, null);
 	}
 	
@@ -255,7 +255,7 @@ public class LoginController extends BaseController{
         userService.insert(user);
 
         try{
-			emailService.sendRegisterEmail(user.getEmail(), user.getId());
+//			emailService.sendRegisterEmail(user.getEmail(), user.getId());
 		}catch(Exception e){
             log.error("注册验证邮件发送失败:" + user.getUserName(), e);
             // throw new MyException(MyError.E000065, "注册验证邮件发送失败");
