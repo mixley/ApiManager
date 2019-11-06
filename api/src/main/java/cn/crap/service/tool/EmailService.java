@@ -69,7 +69,7 @@ public class EmailService implements IEmailService {
 		MailBean mailBean = new MailBean();
 		mailBean.setContext( getMtml(eamil, "注册邮箱验证", "点击验证邮箱：<a href=\""+domain+"\">"+domain+"</a>"));
 		mailBean.setToEmail(eamil);
-		mailBean.setSubject("注册邮箱验证-开源API接口管理系统");
+		mailBean.setSubject("注册邮箱验证-新地API接口管理系统");
 		sendMail(mailBean);
         logger.warn(mailBean.getContext());
 		stringCache.add(code, IConst.REGISTER);
@@ -81,7 +81,7 @@ public class EmailService implements IEmailService {
 		String code = Tools.getChar(6);
 		mailBean.setContext( getMtml(eamil, "找回密码", "邮件验证码为："+code));
 		mailBean.setToEmail(eamil);
-		mailBean.setSubject("找回密码-开源API接口管理系统");
+		mailBean.setSubject("找回密码-新地API接口管理系统");
 		sendMail(mailBean);
 		stringCache.add(IConst.CACHE_FINDPWD+ eamil, code);
 	}

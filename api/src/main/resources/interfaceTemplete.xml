@@ -2252,7 +2252,7 @@
                                     <w:rFonts w:ascii="STSong" w:eastAsia="STSong" w:hAnsi="STSong"/>
                                     <w:color w:val="767171" w:themeColor="background2" w:themeShade="80"/>
                                 </w:rPr>
-                                <w:t>开源API接口管理系统-CRAP API</w:t>
+                                <w:t>新地API接口管理系统-Newland API</w:t>
                             </w:r>
                         </w:p>
                     </w:sdtContent>
@@ -2331,7 +2331,7 @@
                                 <w:rPr>
                                     <w:color w:val="7F7F7F" w:themeColor="text1" w:themeTint="80"/>
                                 </w:rPr>
-                                <w:t>开源API接口管理系统-CRAP API 「api.crap.cn」</w:t>
+                                <w:t>新地API接口管理系统-Newland API </w:t>
                             </w:r>
                             <w:r>
                                 <w:rPr>
@@ -4032,7 +4032,7 @@
                 </HeadingPairs>
                 <TitlesOfParts>
                     <vt:vector size="1" baseType="lpstr">
-                        <vt:lpstr>开源API接口管理系统-CRAP API</vt:lpstr>
+                        <vt:lpstr>新地API接口管理系统-Newland API</vt:lpstr>
                     </vt:vector>
                 </TitlesOfParts>
                 <LinksUpToDate>false</LinksUpToDate>
@@ -5906,9 +5906,9 @@
                                xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
                                xmlns:dcmitype="http://purl.org/dc/dcmitype/"
                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                <dc:title>开源API接口管理系统-CRAP API</dc:title>
+                <dc:title>新地API接口管理系统-Newland API</dc:title>
                 <dc:subject/>
-                <dc:creator>由开源API接口管理系统-CRAP API 「api.crap.cn」提供系统支持</dc:creator>
+                <dc:creator>新地科技版权所有</dc:creator>
                 <cp:keywords/>
                 <dc:description/>
                 <cp:lastModifiedBy>Microsoft Office 用户</cp:lastModifiedBy>

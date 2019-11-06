@@ -38,6 +38,8 @@ public class WordUtils {
         String destDir = Tools.getCanWriteDestDir() + "resources/download";
         destDir += "/word_" + System.currentTimeMillis() + Tools.getChar(20) + ".doc";
         File f = new File(destDir);
+        f.getParentFile().mkdirs();
+        f.createNewFile();
         Template t = template;
         Writer w = null;
         try {
@@ -45,7 +47,7 @@ public class WordUtils {
             w = new OutputStreamWriter(new FileOutputStream(f), "utf-8");
             t.process(dataMap, w);
         }finally {
-            if (t != null){
+            if (w!=null){
                 try {
                     w.close();
                 }catch (Exception e){

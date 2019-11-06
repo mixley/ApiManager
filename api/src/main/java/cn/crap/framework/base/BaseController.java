@@ -136,6 +136,7 @@ public abstract class BaseController implements IConst, ISetting {
 
     @ExceptionHandler({Exception.class})
     public void exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
+        log.error("未处理的错误", ex);
         try {
             if (isAjaxRequest(request)){
                 JsonResult jsonResult = expHandler(request, ex);

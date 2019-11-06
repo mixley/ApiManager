@@ -27,6 +27,8 @@ public class Html2Pdf {
 
             document = new Document();
             file = new File(destDir);
+            boolean mkdirs = file.getParentFile().mkdirs();
+            boolean newFile = file.createNewFile();
             writer = PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
 			
