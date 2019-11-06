@@ -41,7 +41,7 @@
     【${moduleName}】
 </div>
 <div style="padding-right:4px;background:#fff; color:#999;font-size:12px;text-align:right;">
-    湖南省新地科技
+    新地科技
 </div>
 <div style="clear:both;height:2px;width:100%;background:${MAIN_COLOR};"></div>
 <!-- 列表 -->
