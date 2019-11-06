@@ -145,7 +145,7 @@ public class InterfaceService extends BaseService<InterfaceWithBLOBs, InterfaceD
 
         if(interFace.getParam() != null && interFace.getParam().startsWith("form=")){
             List<ParamDto> paramList = JSONArray.parseArray(interFace.getParam() == null ? "[]" : interFace.getParam().substring(5, interFace.getParam().length()), ParamDto.class);
-            interDto.setFormParams(InterfaceAdapter.sortParam(null, paramList, null));
+            interDto.setFormParams(InterfaceAdapter.sortParam(paramList));
         }else{
             interDto.setCustom(true);
             interDto.setCustomParams(interDto.getModel().getParam());
@@ -163,10 +163,10 @@ public class InterfaceService extends BaseService<InterfaceWithBLOBs, InterfaceD
         interDto.setTrueMockUrl(settingCache.getDomain()+"/mock/trueExam.do?id="+interFace.getId());
         interDto.setFalseMockUrl(settingCache.getDomain()+"/mock/falseExam.do?id="+interFace.getId());
         List<ParamDto> headerList = JSONArray.parseArray(interFace.getHeader() == null ? "[]" : interFace.getHeader(), ParamDto.class);
-        interDto.setHeaders(InterfaceAdapter.sortParam(null, headerList, null));
+        interDto.setHeaders(InterfaceAdapter.sortParam(headerList));
 
         List<ParamDto> resParamList = JSONArray.parseArray(interFace.getResponseParam() == null ? "[]" : interFace.getResponseParam(), ParamDto.class);
-        interDto.setResponseParam(InterfaceAdapter.sortParam(null, resParamList, null));
+        interDto.setResponseParam(InterfaceAdapter.sortParam(resParamList));
 
         interDto.setErrors(JSONArray.parseArray(interFace.getErrors(), ErrorDto.class));
         return interDto;

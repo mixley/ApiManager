@@ -10,14 +10,11 @@ import cn.crap.model.Module;
 import cn.crap.model.Project;
 import cn.crap.utils.*;
 import com.alibaba.fastjson.JSONArray;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -75,10 +72,10 @@ public class InterfaceAdapter {
 
 		// 参数排序，一级->二级
 		List<ParamDto> responseParamList = JSONArray.parseArray(model.getResponseParam() == null ? "[]" : model.getResponseParam(), ParamDto.class);
-		dto.setCrShowResponseParamList(sortParam(null, responseParamList, null));
+		dto.setCrShowResponseParamList(sortParam(responseParamList));
 
         List<ParamDto> headerList =JSONArray.parseArray(model.getHeader() == null ? "[]" : model.getHeader(), ParamDto.class);
-        dto.setCrShowHeaderList(sortParam(null, headerList, null));
+        dto.setCrShowHeaderList(sortParam(headerList));
         Optional.ofNullable(headerList).orElse(Lists.newArrayList()).forEach(tempHeader ->{
             if (tempHeader.getName() != null && tempHeader.getName().equalsIgnoreCase(IConst.C_CONTENT_TYPE) && tempHeader.getDef() != null){
                 dto.setReqContentType(tempHeader.getDef());
@@ -89,7 +86,7 @@ public class InterfaceAdapter {
 				IConst.C_PARAM_FORM : IConst.C_PARAM_RAW);
         if (IConst.C_PARAM_FORM.equals(dto.getParamType())) {
             List<ParamDto> paramList = JSONArray.parseArray(model.getParam() == null ? "[]" : model.getParam().substring(5, model.getParam().length()), ParamDto.class);
-            dto.setCrShowParamList(sortParam(null, paramList, null));
+            dto.setCrShowParamList(sortParam(paramList));
             dto.setParam("");
         }
 
@@ -237,73 +234,87 @@ public class InterfaceAdapter {
 
 
 	private static final String PARAM_SEPARATOR = "->";
-    /**
-     *
-     * @param finished
-     * @param unfinished
-     * @param deep 一级参数的 deep = 1
-     */
-	public static List<ParamDto> sortParam(List<ParamDto> finished, List<ParamDto> unfinished, Integer deep){
-	    if (deep == null){
-            deep = 1;
-        }
-        if (finished == null){
-            finished = new ArrayList<>();
-        }
-	    if (CollectionUtils.isEmpty(unfinished)){
-	        return finished;
-        }
-        List<ParamDto> newUnfinished = new ArrayList<>();
-        for (ParamDto paramDto : unfinished){
+
+    public static List<ParamDto> sortParam(List<ParamDto> unfinished){
+        Map<String[],ParamDto> map = new HashMap<>(unfinished.size());
+        Map<Integer,List<String[]>> keyMap= new HashMap<>();
+        Map<String[],LinkedList<String[]>> linked =new HashMap<>();
+        int maxDeep = 0;
+        for (ParamDto paramDto : unfinished) {
             if (paramDto.getName() == null || StringUtils.isEmpty(paramDto.getName())){
                 continue;
             }
             String name = paramDto.getName().trim();
             paramDto.setName(name);
             String[] params = paramDto.getName().split(PARAM_SEPARATOR);
-            if (params.length == deep){
-                // 一级参数没有父参数，直接放入finished
-                if (deep == 1){
-                    paramDto.setRealName(name);
-                    paramDto.setDeep(deep);
-                    finished.add(paramDto);
-                    continue;
-                }
+            int deep = params.length;
+            paramDto.setDeep(deep);
 
-                String paramName = params[params.length - 1];
-                //查询父节点
-                int i = 0;
-                for (; i < finished.size(); i++){
-                    String finishedKey = finished.get(i).getName();
-                    if(name.startsWith(finishedKey)){
-                        String realName = name.substring((finishedKey+PARAM_SEPARATOR).length());
-                        if (realName.equals(paramName)){
+            map.put(params,paramDto);
+            maxDeep = Math.max(deep,maxDeep);
+            if (!keyMap.containsKey(deep)){
+                keyMap.put(deep,new ArrayList<>());
+            }
+            paramDto.setRealName(params[params.length-1]);
+            keyMap.get(deep).add(params);
+
+            linked.put(params,new LinkedList<>());
+        }
+        for (int deep = maxDeep; deep > 1; deep--) {
+            int faDeep = deep - 1;
+            List<String[]> pKeys = keyMap.get(faDeep);
+            for (String[] key : keyMap.get(deep)) {
+                boolean haveP = false;
+                for (String[] pKey : pKeys) {
+                    int k = 0;
+                    for (; k < pKey.length; k++) {
+                        if (!pKey[k].equals(key[k])){
                             break;
                         }
                     }
+                    if (k==pKey.length){
+                        haveP = true;
+                        linked.get(pKey).add(key);
+                        linked.get(pKey).addAll(linked.get(key));
+                        break;
+                    }
                 }
-                if (i == finished.size()){
-                    String[] tempNames = new String[params.length-1];
-                    System.arraycopy(params,0,tempNames,0,tempNames.length);
+                if (!haveP){
+                    String[] tempNames = new String[key.length - 1];
+                    System.arraycopy(key, 0, tempNames, 0, tempNames.length);
                     String tempName = org.apache.commons.lang.StringUtils.join(tempNames, PARAM_SEPARATOR);
                     ParamDto faParamDto = new ParamDto();
-                    faParamDto.setDeep(deep-1);
+                    faParamDto.setDeep(faDeep);
                     faParamDto.setName(tempName);
-                    faParamDto.setRealName(tempNames[tempNames.length-1]);
+                    faParamDto.setRealName(key[faDeep - 1]);
                     faParamDto.setType("object");
                     faParamDto.setNecessary("false");
                     faParamDto.setRemark("默认生成 默认object");
-                    finished.add(faParamDto);
-                }
-                paramDto.setDeep(deep);
-                paramDto.setRealName(paramName);
-                finished.add(paramDto);
 
-            } else if(params.length > deep){
-                newUnfinished.add(paramDto);
+                    map.put(tempNames,faParamDto);
+                    if (!keyMap.containsKey(faDeep)){
+                        keyMap.put(faDeep,new ArrayList<>());
+                    }
+                    keyMap.get(faDeep).add(tempNames);
+
+                    LinkedList<String[]> link = new LinkedList<>();
+                    link.add(key);
+                    link.addAll(linked.get(key));
+                    linked.put(tempNames, link);
+                }
+
             }
         }
-        return sortParam(finished, newUnfinished, ++deep);
+        List<ParamDto> finish = new ArrayList<>();
+        if (keyMap.containsKey(1)){
+            for (String[] key : keyMap.get(1)) {
+                finish.add(map.get(key));
+                for (String[] ckey : linked.get(key)) {
+                    finish.add(map.get(ckey));
+                }
+            }
+        }
+        return finish;
     }
 
 //    public static void main(String args[]){
