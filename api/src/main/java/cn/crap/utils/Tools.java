@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -356,7 +357,13 @@ public class Tools {
 
     public static String getServicePath() {
         String path = Tools.class.getClassLoader().getResource("").getPath().replace("WEB-INF/classes/", "");;
-        return path.endsWith("/") ? path : path + "/";
+        String filePath = path.endsWith("/") ? path : path + "/";
+        try {
+            filePath = URLDecoder.decode(filePath, "UTF-8");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return filePath;
     }
     public static String destDir=null;
     public static String getCanWriteDestDir() {

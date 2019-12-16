@@ -1,7 +1,7 @@
 package cn.crap.enu;
 
 public enum GenerateType {
-	MY_BATIS_XML("MyBatis xml"), JAVA_PO("java 对象");
+	MY_BATIS_XML("MyBatis xml"), JAVA_PO("java 对象"), MYSQL("MySql 语句");
 	private final String name;
 
 	public static String getByEnumName(String enumName){

@@ -1,0 +1,4 @@
+CREATE TABLE `TABLE_NAME` (CA_PO_FIELD
+  PRIMARY KEY (`id`),
+  KEY `ids_tenant_id` (`organ_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='COMMENT 注释';

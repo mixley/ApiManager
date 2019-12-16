@@ -20,7 +20,7 @@ public class DownloadUtils {
             response.setCharacterEncoding("utf-8");
             response.setContentType(isPdf ? "application/pdf" : "application/msword");
 
-            String fileName = "CrapApi_" + name + (isPdf ? ".pdf" : ".doc");
+            String fileName = name + (isPdf ? ".pdf" : ".doc");
             response.setHeader("Content-Disposition", "attachment;filename=".concat(String.valueOf(URLEncoder.encode(fileName, "UTF-8"))));
 
             out = response.getOutputStream();
