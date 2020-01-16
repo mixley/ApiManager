@@ -1568,7 +1568,7 @@ userModule.controller('userCtrl', function ($rootScope, $scope, $http, $state, $
                 _FILED_TYPE=_FILED_TYPE+" CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ";
             }
             let def = tab[index]['def'] == '' ? 'NULL' : tab[index]['def'];//${_FILED_ISNULL}
-            let _FILED_ISNULL = tab[index]['notNull'] == 'true' ? 'NOT NULL' : 'DEFAULT ' + def;//${_FILED_ISNULL}
+            let _FILED_ISNULL = tab[index]['notNull'] == 'false' ? 'NOT NULL' : 'DEFAULT ' + def;//${_FILED_ISNULL}
             if (_FILED_NAME=="update_time"){
                 _FILED_ISNULL=_FILED_ISNULL+" ON UPDATE CURRENT_TIMESTAMP"
             }

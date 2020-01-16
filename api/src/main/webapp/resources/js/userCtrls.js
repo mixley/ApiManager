@@ -341,6 +341,54 @@ userModule.controller('userCtrl', function($rootScope,$scope, $http, $state,$loc
     };
 
     // 代码生成
+    $scope.generateMysql = function () {
+        let tab = $rootScope.model.dictionaries;
+        //fieldCreat/tableCreat
+        let _TABLE_NAME = "表名称";//${_TABLE_NAME}
+        let _TABLE_FiledS = "";//${_TABLE_FiledS}
+        let _TABLE_IDS = "";//${_TABLE_IDS}
+        let _TABLE_COMMENT = $rootScope.model.name;//${_TABLE_COMMENT}
+
+        for (let index in tab) {
+            let _FILED_NAME = tab[index]['name'];//${_FILED_NAME}
+            let _FILED_TYPE = tab[index]['type'];//${_FILED_TYPE}
+
+            if (_FILED_TYPE.indexOf("text")!=-1||_FILED_TYPE.indexOf("char")!=-1){
+                _FILED_TYPE=_FILED_TYPE+" CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ";
+            }
+            let def = tab[index]['def'] == '' ? 'NULL' : tab[index]['def'];//${_FILED_ISNULL}
+            let _FILED_ISNULL = tab[index]['notNull'] == 'false' ? 'NOT NULL' : 'DEFAULT ' + def;//${_FILED_ISNULL}
+            if (_FILED_NAME=="update_time"){
+                _FILED_ISNULL=_FILED_ISNULL+" ON UPDATE CURRENT_TIMESTAMP"
+            }
+            let _FILED_COMMENT = tab[index]['remark'];//${_FILED_COMMENT}
+
+            if (tab[index]['flag']=='primary'){
+                if (_TABLE_IDS!=""&&_TABLE_IDS!=undefined&&_TABLE_IDS!=null){
+                    _TABLE_IDS=_TABLE_IDS+",";
+                }
+                _TABLE_IDS=_TABLE_IDS+"'"+_FILED_NAME+"'";
+            }
+            let _FieldCreat = fieldCreat
+                .replace("${_FILED_NAME}", _FILED_NAME)
+                .replace("${_FILED_TYPE}", _FILED_TYPE)
+                .replace("${_FILED_ISNULL}", _FILED_ISNULL)
+                .replace("${_FILED_COMMENT}", _FILED_COMMENT);
+            if (_TABLE_IDS!=""&&_TABLE_IDS!=undefined&&_TABLE_IDS!=null){
+                _TABLE_IDS="id";
+            }
+            _TABLE_FiledS=_TABLE_FiledS+_FieldCreat;
+
+            let _TableCreat = tableCreat
+                .replace("${_TABLE_NAME}", _TABLE_NAME)
+                .replace("${_TABLE_FiledS}", _TABLE_FiledS)
+                .replace("${_TABLE_IDS}", _TABLE_IDS)
+                .replace("${_TABLE_COMMENT}", _TABLE_COMMENT);;
+            $rootScope["generateCodeResult"] = _TableCreat;
+        }
+    };
+
+    // 代码生成
     $scope.generateCode = function(type) {
         var params = "iUrl=user/dictionary/generateCode.do|iLoading=FLOAT|iPost=POST|iParams=&fieldNames=" + $rootScope.selectFields + "&type=" + type;
         $rootScope.getBaseDataToDataKey($scope,$http,params, 0, "generateCodeResult");
@@ -550,3 +598,8 @@ function addDynamicJS(src, callback) {
         }
     }
 }
+
+let fieldCreat = "\n\t\t`${_FILED_NAME}` ${_FILED_TYPE} ${_FILED_ISNULL} COMMENT '${_FILED_COMMENT}',";
+let tableCreat = "\tCREATE TABLE `${_TABLE_NAME}` (${_TABLE_FiledS}" +
+    "\n\t\tPRIMARY KEY (${_TABLE_IDS})" +
+    "\n\t) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='${_TABLE_COMMENT}';";
